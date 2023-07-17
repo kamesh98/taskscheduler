@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: taskscheduler
+      POSTGRES_DB: taskscheduler
+    ports:
+      - "5433:5432"  # Map host port 5433 to container port 5432
+    networks:
+      - taskscheduler_net
+    volumes:
+      - pgdata:/var/lib/posgresql/data
+
+  web:
+    build: .
+    restart: always
+    ports:
+      - 8400:8400
+    depends_on:
+      - db
+    networks:
+      - taskscheduler_net
+networks:
+  taskscheduler_net:
+volumes:
+  pgdata:
+
+  # test:
+  #   build: .
+  #   command: ["pytest"]
+  #   depends_on:
+  #     - db
